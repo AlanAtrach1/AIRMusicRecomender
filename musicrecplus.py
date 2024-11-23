@@ -1,9 +1,10 @@
 def read_preferences(filename):
     '''
-    whoever wrote this write your name
+    Ruhi Ajinkya
+    Open file and read user preferences 
     '''
     dic = {}
-    with open(filename, 'r') as file:
+    with open(filename, "r") as file:
         for line in file:
             [username, singers] = line.strip().split(":")
             singersList = singers.strip().split(",")
@@ -12,9 +13,10 @@ def read_preferences(filename):
 
 def write_preferences(filename):
     '''
-    whoever wrote this write your name
+    Ruhi Ajinkya
+    Open file to prompt the user for their preferences, and then write user preferences
     '''
-    with open(filename, 'w') as file:
+    with open(filename, "w") as file:
         for line in file:
             username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
             singersList = input("Enter an artist that you like (Enter to finish) ")
@@ -23,7 +25,8 @@ def write_preferences(filename):
 
 def showMenu():
     '''
-    whoever wrote this write your name
+    Ruhi Ajinkya
+    Menu to show user what options they have
     '''
     print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np -  Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nq - Save and quit")
     response = input()
