@@ -32,6 +32,70 @@ def showMenu():
     response = input()
     return response
     
+def getRecommendations(currentUser, dict):
+    '''
+    Ian Chao
+    Given the current user and the dictionary containing all user info, finds the most similar user and prints a list of unique artists.
+    '''
+    if currentUser not in dict:
+        print("No recommendations available at this time.")
+    currentUserPref = dict[currentUser]
+    matches = 0
+    uniques = []
+    for user in dict.keys():
+        if user == currentUser or user[-1] == "$":
+            continue
+        artists = dict[user]
+        numMatches = 0
+        currentUniques = []
+        for artist in artists:
+            if artist in currentUserPref:
+                numMatches += 1
+            else:
+                currentUniques.append(artist)
+        if numMatches > matches and len(currentUniques) > 0:
+            matches = numMatches
+            uniques = currentUniques
+    if uniques == []:
+        print("No recommendations available at this time.")
+    uniques.sort()
+    for artist in uniques:
+        print(artist)
+           
+def showPopularArtists(dict):
+    '''
+    Ian Chao
+    Given the dictionary containing all user info, finds the top 3 most popular artists.
+    '''
+    artistCounts = {}
+    for user in dict.keys():
+        if user[-1] == "$":
+            continue
+        artists = dict[user]
+        for artist in artists:
+            if artist in artistCounts:
+                artistCounts[artist] += 1
+            else:
+                artistCounts[artist] = 1
+    mostPopular = []
+    for artist in artistCounts.keys():
+        if len(mostPopular) == 3:
+            break
+        most = artist
+        count = artistCounts[artist]
+        for otherArtist in artistCounts.keys():
+            if otherArtist == artist:
+                continue
+            if artistCounts[otherArtist] > count:
+                most = otherArtist
+                count = artistCounts[otherArtist]
+        if most in mostPopular:
+            continue
+        else:
+            mostPopular.append(most)
+    for artist in mostPopular:
+        print(artist)
+
 def popular_score(dict):
     '''
     Alan Atrach
@@ -88,12 +152,14 @@ dict = {
     "Anne Adamant": ["50 Cent", "Eminem", "Lil Wayne", "Snoop Dog"],
     "Bacon Bryant$": ["Britney Spears", "Gotye", "Kesha", "TMBG"],
     "Caesar Zeppeli": ["Fun.", "Gotye", "Sara Bareilles"],
-    "Hidden Powers$": ["Baby Metal", "FLOW", "Spyair", "Vipera", "something"],
+    "Hidden Powers": ["Baby Metal", "FLOW", "Spyair", "Vipera", "something"],
     "Sappho of Lesbos": ["Anna Kendrick", "Kerkylas Of Andros", "Sara Bareilles"],
     "Steph Oro": ["Fun.", "Gotye", "Sara Bareilles"]
 }
 
 dict2 = {}
+
+dict3 = {"Steph Oro": ["Fun.", "Gotye", "TMBG"]}
 
 # popular_score(dict2)
 
@@ -114,9 +180,9 @@ def main():
         if option == "e":
             pass
         elif option == "r":
-            pass
+            getRecommendations("Steph Oro", dict3)
         elif option == "p":
-            pass
+            showPopularArtists(dict3)
         elif option == "h":
             popular_score(data)
         elif option == "m":
