@@ -11,17 +11,22 @@ def read_preferences(filename):
             dic[username.rstrip()] = singersList
     return dic
 
-def write_preferences(filename):
+def enter_preferences(user, filename):
     '''
     Ruhi Ajinkya
     Open file to prompt the user for their preferences, and then write user preferences
     '''
+    singerDict = {user:[]}
+    print("Enter preferences for ----" + user + "----")
+    while(True):
+            singer = input("Enter an artist that you like (Enter to finish): ")
+            if singer == "":
+                break
+            else:
+                singerDict[user].append(singer)
     with open(filename, "w") as file:
-        for line in file:
-            username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
-            singersList = input("Enter an artist that you like (Enter to finish) ")
-            file.write(username + ":" + singersList)
-    filename.close()
+        for user,artists in singerDict.items():
+            file.write(user + ": "+", ".join(artists))
 
 def showMenu():
     '''
@@ -102,17 +107,18 @@ def main():
     main function, utilizes all methods
     '''
     #TODO: implement proper text here
-    
+    username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
+
     # file = "musicrecplus.txt"
     # write_preferences(file)
     file = "musicrecplus_ex2_a.txt" #just testing out functionality, delete and replace with commented file for actual build
-    data = read_preferences(file)
+    data = enter_preferences(file)
     option = showMenu()
     
     #TODO: put appropriate methods here
     while option != "q":
         if option == "e":
-            pass
+            enter_preferences(username, file)
         elif option == "r":
             pass
         elif option == "p":
