@@ -182,9 +182,9 @@ def main():
         if option == "e":
             enter_preferences(username, file)
         elif option == "r":
-            getRecommendations("Steph Oro", dict3)
+            getRecommendations(username, data)
         elif option == "p":
-            showPopularArtists(dict3)
+            showPopularArtists(data)
         elif option == "h":
             popular_score(data)
         elif option == "m":
