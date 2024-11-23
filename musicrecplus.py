@@ -33,7 +33,7 @@ def showMenu():
     Ruhi Ajinkya
     Menu to show user what options they have
     '''
-    print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np -  Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nq - Save and quit")
+    print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np - Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nq - Save and quit")
     response = input()
     return response
     
@@ -172,16 +172,12 @@ def main():
     '''
     main function, utilizes all methods
     '''
-    #TODO: implement proper text here
     username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
 
-    # file = "musicrecplus.txt"
-    # write_preferences(file)
-    file = "musicrecplus_ex2_a.txt" #just testing out functionality, delete and replace with commented file for actual build
-    data = enter_preferences(file)
+    file = "musicrecplus.txt"
+    data = read_preferences(file)
     option = showMenu()
     
-    #TODO: put appropriate methods here
     while option != "q":
         if option == "e":
             enter_preferences(username, file)
