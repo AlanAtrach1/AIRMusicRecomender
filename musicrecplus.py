@@ -11,7 +11,7 @@ def read_preferences(filename):
             dic[username.rstrip()] = singersList
     return dic
 
-def enter_preferences(user, filename):
+def enter_preferences(user):
     '''
     Ruhi Ajinkya
     Open file to prompt the user for their preferences, and then write user preferences
@@ -19,14 +19,13 @@ def enter_preferences(user, filename):
     singerDict = {user:[]}
     print("Enter preferences for ----" + user + "----")
     while(True):
-            singer = input("Enter an artist that you like (Enter to finish): ")
-            if singer == "":
-                break
-            else:
-                singerDict[user].append(singer)
-    with open(filename, "w") as file:
-        for user,artists in singerDict.items():
-            file.write(user + ": "+", ".join(artists))
+        singer = input("Enter an artist that you like (Enter to finish): ")
+        if singer == "":
+            break
+        else:
+            singerDict[user].append(singer)
+
+    return singerDict
 
 def showMenu():
     '''
@@ -148,7 +147,16 @@ def most_likes(dict):
     else:
         for user in userList:
             print(user + "\n")
-         
+
+def saveAndQuit(data, file):
+    '''
+    Ruhi Ajinkya
+    Uses data that the user input to overwrite the text file
+    '''
+    with open(file, "w") as file:
+        for user,artists in data.items():
+            file.write(user + ": "+", ".join(artists))
+
             
 #TODO: delete these when done, i found it useful to have them here so you guys can use it if yall want
 
@@ -174,23 +182,36 @@ def main():
     '''
     username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
 
+<<<<<<< HEAD
     file = "musicrecplus.txt"
+=======
+    file = "musicrecplus.txt" 
+>>>>>>> 93f29ff1ef97b51107284748071161cb0feb7374
     data = read_preferences(file)
     option = showMenu()
     
     while option != "q":
         if option == "e":
-            enter_preferences(username, file)
+           if username in data:
+                print("This user already exists, please enter a new one")
         elif option == "r":
+<<<<<<< HEAD
             getRecommendations(username, data)
         elif option == "p":
             showPopularArtists(data)
+=======
+            getRecommendations("Steph Oro", dict3)
+        elif option == "p":
+            showPopularArtists(dict3)
+>>>>>>> 93f29ff1ef97b51107284748071161cb0feb7374
         elif option == "h":
             popular_score(data)
         elif option == "m":
             most_likes(data)
             
         option = showMenu()
+    
+    if option == "q":
+        saveAndQuit(data,file)
     # TODO: save file after completion
 main()
-
