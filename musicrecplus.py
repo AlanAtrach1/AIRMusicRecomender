@@ -1,12 +1,12 @@
 import os
 
-def read_preferences(filename):
+def read_preferences(file):
     '''
     Ruhi Ajinkya
     Open file and read user preferences 
     '''
     dic = {}
-    with open(filename, "r") as file:
+    with open(file, "r") as file:
         for line in file:
             [username, singers] = line.strip().split(":")
             singersList = singers.strip().split(",")
@@ -19,13 +19,12 @@ def enter_preferences(user):
     Open file to prompt the user for their preferences, and then write user preferences
     '''
     singerDict = {user:[]}
-    print("Enter preferences for ----" + user + "----")
     while(True):
-            singer = input("Enter an artist that you like (Enter to finish): ")
-            if singer == "":
-                break
-            else:
-                singerDict[user].append(singer)
+        singer = input("Enter an artist that you like (Enter to finish):\n")
+        if singer == "":
+            break
+        else:
+            singerDict[user].append(singer)
     
     return singerDict
 
@@ -149,7 +148,8 @@ def most_likes(dict):
         print("Sorry, no user found.")
     else:
         for user in userList:
-            print(user + "\n")
+            # print(user + "\n") # can't have newline for one person
+            print(user)
 
 def save(data, file):
     '''
@@ -158,7 +158,8 @@ def save(data, file):
     '''
     with open(file, "w") as file:
         for user,artists in data.items():
-            file.write(user + ": "+", ".join(artists))  
+            # TODO: # when saving the file, older users have to be on the bottom
+            file.write(user + ":"+",".join(artists) + "\n")
             
 #TODO: delete these when done, i found it useful to have them here so you guys can use it if yall want
 
@@ -182,24 +183,28 @@ def main():
     '''
     main function, utilizes all methods
     '''
-    username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
+    filename = "musicrecplus.txt"
+    if not os.path.exists(filename):
+        file = open(filename, "w")
     
-    if os.path.exists("musicrecplus.txt"):
-        file = "musicrecplus.txt" 
-    else:
-        file = open("musicrecplus.txt")
-    
-    data = read_preferences(file)
+    data = read_preferences(filename)
+
+    username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):\n")
+    # Check if the user is in the file, if not ask them to enter preferences
+    if not username in data:
+        data[username] = enter_preferences(username)[username]
+
     option = showMenu()
     
     #TODO: put appropriate methods here
     while option != "q":
         if option == "e":
             if username in data:
+                # TODO This only works for the first iteration, and it wont work when a user wants to add more artists
                 print("The user " + username +" already exists, please enter a new one")
                 username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
             else:
-                data = enter_preferences(username)
+                data[username] = enter_preferences(username)[username]
         elif option == "r":
             getRecommendations(username, data)
         elif option == "p":
@@ -209,8 +214,9 @@ def main():
         elif option == "m":
             most_likes(data)
         
-        save(data,file)
         option = showMenu()
-    # TODO: save file after completion
+    
+    save(data, filename)
+
 main()
 
