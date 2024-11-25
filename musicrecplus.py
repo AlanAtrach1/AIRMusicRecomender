@@ -192,7 +192,6 @@ def main():
         if option == "e":
            if username in data:
                 print("This user already exists, please enter a new one")
-                main()
         elif option == "r":
             getRecommendations("Steph Oro", dict3)
         elif option == "p":
