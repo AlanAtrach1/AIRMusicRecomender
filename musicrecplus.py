@@ -200,7 +200,7 @@ def main():
     option = showMenu()
     #TODO: put appropriate methods here
     while option != "q":
-        print(data)
+        # print(data)
         if option == "e":
             data[username] = enter_preferences()
         elif option == "r":
