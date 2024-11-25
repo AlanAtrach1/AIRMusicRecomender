@@ -190,10 +190,9 @@ def main():
     #TODO: put appropriate methods here
     while option != "q":
         if option == "e":
-            if username in data:
+           if username in data:
                 print("This user already exists, please enter a new one")
-            else:
-                data = enter_preferences(username)
+                main()
         elif option == "r":
             getRecommendations("Steph Oro", dict3)
         elif option == "p":
