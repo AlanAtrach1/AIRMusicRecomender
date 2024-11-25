@@ -1,3 +1,5 @@
+import os
+
 def read_preferences(filename):
     '''
     Ruhi Ajinkya
@@ -11,7 +13,7 @@ def read_preferences(filename):
             dic[username.rstrip()] = singersList
     return dic
 
-def enter_preferences(user, filename):
+def enter_preferences(user):
     '''
     Ruhi Ajinkya
     Open file to prompt the user for their preferences, and then write user preferences
@@ -24,9 +26,9 @@ def enter_preferences(user, filename):
                 break
             else:
                 singerDict[user].append(singer)
-    with open(filename, "w") as file:
-        for user,artists in singerDict.items():
-            file.write(user + ": "+", ".join(artists))
+    
+    return singerDict
+
 
 def showMenu():
     '''
@@ -148,7 +150,15 @@ def most_likes(dict):
     else:
         for user in userList:
             print(user + "\n")
-         
+
+def save(data, file):
+    '''
+    Ruhi Ajinkya
+    Uses data that the user inputs to add to the text file
+    '''
+    with open(file, "w") as file:
+        for user,artists in data.items():
+            file.write(user + ": "+", ".join(artists))  
             
 #TODO: delete these when done, i found it useful to have them here so you guys can use it if yall want
 
@@ -173,14 +183,23 @@ def main():
     main function, utilizes all methods
     '''
     username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
-
-    file = "musicrecplus.txt"
+    
+    if os.path.exists("musicrecplus.txt"):
+        file = "musicrecplus.txt" 
+    else:
+        file = open("musicrecplus.txt")
+    
     data = read_preferences(file)
     option = showMenu()
     
+    #TODO: put appropriate methods here
     while option != "q":
         if option == "e":
-            enter_preferences(username, file)
+            if username in data:
+                print("The user " + username +" already exists, please enter a new one")
+                username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
+            else:
+                data = enter_preferences(username)
         elif option == "r":
             getRecommendations(username, data)
         elif option == "p":
@@ -189,7 +208,8 @@ def main():
             popular_score(data)
         elif option == "m":
             most_likes(data)
-            
+        
+        save(data,file)
         option = showMenu()
     # TODO: save file after completion
 main()
