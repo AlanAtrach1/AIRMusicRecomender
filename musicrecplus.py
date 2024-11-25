@@ -13,20 +13,20 @@ def read_preferences(file):
             dic[username.rstrip()] = singersList
     return dic
 
-def enter_preferences(user):
+def enter_preferences():
     '''
     Ruhi Ajinkya
     Open file to prompt the user for their preferences, and then write user preferences
     '''
-    singerDict = {user:[]}
+    singerList = []
     while(True):
         singer = input("Enter an artist that you like (Enter to finish):\n")
         if singer == "":
             break
         else:
-            singerDict[user].append(singer)
-    
-    return singerDict
+            singerList.append(singer)
+    singerList.sort()
+    return singerList
 
 
 def showMenu():
@@ -110,7 +110,7 @@ def popular_score(dict):
     artistLikes = {}
     count = 0
     for user in dict:
-        if user[len(user) - 1] == "$":
+        if user[-1] == "$":
             continue
         for artist in dict[user]:
             if artist in artistLikes:
@@ -135,7 +135,7 @@ def most_likes(dict):
     userList = []
     likes = 0
     for user in dict:
-        if user[len(user) - 1] == "$":
+        if user[-1] == "$":
             continue
         amount = len(dict[user])
         if amount > likes:
@@ -156,10 +156,12 @@ def save(data, file):
     Ruhi Ajinkya
     Uses data that the user inputs to add to the text file
     '''
+    sortedData = list(data.keys())
+    sortedData.sort()
+    
     with open(file, "w") as file:
-        for user,artists in data.items():
-            # TODO: # when saving the file, older users have to be on the bottom
-            file.write(user + ":"+",".join(artists) + "\n")
+        for user in sortedData:
+            file.write(user + ":"+",".join(data[user]) + "\n")
             
 #TODO: delete these when done, i found it useful to have them here so you guys can use it if yall want
 
@@ -192,19 +194,14 @@ def main():
     username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):\n")
     # Check if the user is in the file, if not ask them to enter preferences
     if not username in data:
-        data[username] = enter_preferences(username)[username]
+        data[username] = enter_preferences()
 
     option = showMenu()
-    
     #TODO: put appropriate methods here
     while option != "q":
+        print(data)
         if option == "e":
-            if username in data:
-                # TODO This only works for the first iteration, and it wont work when a user wants to add more artists
-                print("The user " + username +" already exists, please enter a new one")
-                username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
-            else:
-                data[username] = enter_preferences(username)[username]
+            data[username] = enter_preferences()
         elif option == "r":
             getRecommendations(username, data)
         elif option == "p":
@@ -215,6 +212,8 @@ def main():
             most_likes(data)
         
         option = showMenu()
+    
+    
     
     save(data, filename)
 
