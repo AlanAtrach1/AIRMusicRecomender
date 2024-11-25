@@ -24,6 +24,7 @@ def enter_preferences():
         if singer == "":
             break
         else:
+            singer = singer.title()
             singerList.append(singer)
     singerList.sort()
     return singerList
