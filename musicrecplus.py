@@ -11,7 +11,7 @@ def read_preferences(filename):
             dic[username.rstrip()] = singersList
     return dic
 
-def enter_preferences(user, filename):
+def enter_preferences(user):
     '''
     Ruhi Ajinkya
     Open file to prompt the user for their preferences, and then write user preferences
@@ -19,14 +19,13 @@ def enter_preferences(user, filename):
     singerDict = {user:[]}
     print("Enter preferences for ----" + user + "----")
     while(True):
-            singer = input("Enter an artist that you like (Enter to finish): ")
-            if singer == "":
-                break
-            else:
-                singerDict[user].append(singer)
-    with open(filename, "w") as file:
-        for user,artists in singerDict.items():
-            file.write(user + ": "+", ".join(artists))
+        singer = input("Enter an artist that you like (Enter to finish): ")
+        if singer == "":
+            break
+        else:
+            singerDict[user].append(singer)
+
+    return singerDict
 
 def showMenu():
     '''
@@ -37,6 +36,70 @@ def showMenu():
     response = input()
     return response
     
+def getRecommendations(currentUser, dict):
+    '''
+    Ian Chao
+    Given the current user and the dictionary containing all user info, finds the most similar user and prints a list of unique artists.
+    '''
+    if currentUser not in dict:
+        print("No recommendations available at this time.")
+    currentUserPref = dict[currentUser]
+    matches = 0
+    uniques = []
+    for user in dict.keys():
+        if user == currentUser or user[-1] == "$":
+            continue
+        artists = dict[user]
+        numMatches = 0
+        currentUniques = []
+        for artist in artists:
+            if artist in currentUserPref:
+                numMatches += 1
+            else:
+                currentUniques.append(artist)
+        if numMatches > matches and len(currentUniques) > 0:
+            matches = numMatches
+            uniques = currentUniques
+    if uniques == []:
+        print("No recommendations available at this time.")
+    uniques.sort()
+    for artist in uniques:
+        print(artist)
+           
+def showPopularArtists(dict):
+    '''
+    Ian Chao
+    Given the dictionary containing all user info, finds the top 3 most popular artists.
+    '''
+    artistCounts = {}
+    for user in dict.keys():
+        if user[-1] == "$":
+            continue
+        artists = dict[user]
+        for artist in artists:
+            if artist in artistCounts:
+                artistCounts[artist] += 1
+            else:
+                artistCounts[artist] = 1
+    mostPopular = []
+    for artist in artistCounts.keys():
+        if len(mostPopular) == 3:
+            break
+        most = artist
+        count = artistCounts[artist]
+        for otherArtist in artistCounts.keys():
+            if otherArtist == artist:
+                continue
+            if artistCounts[otherArtist] > count:
+                most = otherArtist
+                count = artistCounts[otherArtist]
+        if most in mostPopular:
+            continue
+        else:
+            mostPopular.append(most)
+    for artist in mostPopular:
+        print(artist)
+
 def popular_score(dict):
     '''
     Alan Atrach
@@ -84,7 +147,16 @@ def most_likes(dict):
     else:
         for user in userList:
             print(user + "\n")
-         
+
+def saveAndQuit(data, file):
+    '''
+    Ruhi Ajinkya
+    Uses data that the user input to overwrite the text file
+    '''
+    with open(file, "w") as file:
+        for user,artists in data.items():
+            file.write(user + ": "+", ".join(artists))
+
             
 #TODO: delete these when done, i found it useful to have them here so you guys can use it if yall want
 
@@ -93,12 +165,14 @@ dict = {
     "Anne Adamant": ["50 Cent", "Eminem", "Lil Wayne", "Snoop Dog"],
     "Bacon Bryant$": ["Britney Spears", "Gotye", "Kesha", "TMBG"],
     "Caesar Zeppeli": ["Fun.", "Gotye", "Sara Bareilles"],
-    "Hidden Powers$": ["Baby Metal", "FLOW", "Spyair", "Vipera", "something"],
+    "Hidden Powers": ["Baby Metal", "FLOW", "Spyair", "Vipera", "something"],
     "Sappho of Lesbos": ["Anna Kendrick", "Kerkylas Of Andros", "Sara Bareilles"],
     "Steph Oro": ["Fun.", "Gotye", "Sara Bareilles"]
 }
 
 dict2 = {}
+
+dict3 = {"Steph Oro": ["Fun.", "Gotye", "TMBG"]}
 
 # popular_score(dict2)
 
@@ -109,26 +183,29 @@ def main():
     #TODO: implement proper text here
     username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
 
-    # file = "musicrecplus.txt"
-    # write_preferences(file)
-    file = "musicrecplus_ex2_a.txt" #just testing out functionality, delete and replace with commented file for actual build
-    data = enter_preferences(file)
+    file = "musicrecplus.txt" 
+    data = read_preferences(file)
     option = showMenu()
     
     #TODO: put appropriate methods here
     while option != "q":
         if option == "e":
-            enter_preferences(username, file)
+            if username in file:
+                print("This user already exists, please enter a new one")
+            else:
+                data = enter_preferences(username)
         elif option == "r":
-            pass
+            getRecommendations("Steph Oro", dict3)
         elif option == "p":
-            pass
+            showPopularArtists(dict3)
         elif option == "h":
             popular_score(data)
         elif option == "m":
             most_likes(data)
             
         option = showMenu()
+    
+    if option == "q":
+        saveAndQuit(data,file)
     # TODO: save file after completion
 main()
-
