@@ -1,3 +1,12 @@
+'''
+Created on 12/04/2024
+@author:   Alan Atrach, Ian Chao, Ruhi Ajinkya
+Pledge:    I pledge my honor that I have abided by the Stevens Honor System.
+
+CS115 - Group Project
+'''
+
+
 import os
 
 def read_preferences(file):
@@ -35,6 +44,7 @@ def showMenu():
     Ruhi Ajinkya
     Menu to show user what options they have
     '''
+    #TODO maybe put delete and show on menu?
     print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np - Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nq - Save and quit")
     response = input()
     return response
@@ -151,6 +161,31 @@ def most_likes(dict):
         for user in userList:
             # print(user + "\n") # can't have newline for one person
             print(user)
+            
+def delete(currentUser, dict):
+    '''
+    Alan Atrach
+    delets a specified artist from the user's preferences
+    '''
+    artists = dict[currentUser]
+    while len(artists) != 0:
+        print("Type the number correlated to the artist to delete:\n")
+        for i in range (0, len(artists)):
+            print(f"{i + 1}. {artists[i]}")
+        response = input()
+        if response == "":
+            return
+        elif not response.isdigit() or int(response) > len(artists) or int(response) < 1:
+            print("invalid input, try again or press enter to end")
+        else:
+            artists.pop(int(response) - 1)
+            print(f"artist {response} has been removed")
+    print("No artists in user preference")
+        
+        
+    
+    
+    
 
 def save(data, file):
     '''
@@ -211,6 +246,9 @@ def main():
             popular_score(data)
         elif option == "m":
             most_likes(data)
+        elif option == "d":
+            delete(username, data)
+        
         
         option = showMenu()
     
