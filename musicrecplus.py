@@ -44,8 +44,7 @@ def showMenu():
     Ruhi Ajinkya
     Menu to show user what options they have
     '''
-    #TODO maybe put delete and show on menu?
-    print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np - Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nq - Save and quit")
+    print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np - Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nd - Delete Preferences\ns - Show Preferences\nq - Save and quit")
     response = input()
     return response
     
@@ -248,6 +247,8 @@ def main():
             most_likes(data)
         elif option == "d":
             delete(username, data)
+        elif option == "s":
+            pass #enter function name here
         
         
         option = showMenu()
