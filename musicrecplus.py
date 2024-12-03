@@ -9,6 +9,8 @@ CS115 - Group Project
 
 import os
 
+EXTRA_CREDIT = False
+
 def read_preferences(file):
     '''
     Ruhi Ajinkya
@@ -46,6 +48,8 @@ def showMenu():
     '''
     #TODO maybe put delete and show on menu?
     print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np - Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nq - Save and quit")
+    if EXTRA_CREDIT:
+        print("d - Delete preference\ns - Show preferences")
     response = input()
     return response
     
@@ -181,7 +185,15 @@ def delete(currentUser, dict):
             artists.pop(int(response) - 1)
             print(f"artist {response} has been removed")
     print("No artists in user preference")
-        
+
+def showPreferences(currentUser, dict):
+    '''
+    Ian Chao
+    Prints the current user's preferences
+    '''
+    preferences = dict[currentUser]
+    for artist in preferences:
+        print(artist)
         
     
     
@@ -246,8 +258,10 @@ def main():
             popular_score(data)
         elif option == "m":
             most_likes(data)
-        elif option == "d":
+        elif option == "d" and EXTRA_CREDIT:
             delete(username, data)
+        elif option == "s" and EXTRA_CREDIT:
+            showPreferences(username, data)
         
         
         option = showMenu()
