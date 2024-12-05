@@ -1,39 +1,55 @@
-def read_preferences(filename):
+'''
+Created on 12/04/2024
+@author:   Alan Atrach, Ian Chao, Ruhi Ajinkya
+Pledge:    I pledge my honor that I have abided by the Stevens Honor System.
+
+CS115 - Group Project
+'''
+
+
+import os
+
+EXTRA_CREDIT = False
+
+def read_preferences(file):
     '''
     Ruhi Ajinkya
     Open file and read user preferences 
     '''
     dic = {}
-    with open(filename, "r") as file:
+    with open(file, "r") as file:
         for line in file:
             [username, singers] = line.strip().split(":")
             singersList = singers.strip().split(",")
             dic[username.rstrip()] = singersList
     return dic
 
-def enter_preferences(user, filename):
+def enter_preferences():
     '''
     Ruhi Ajinkya
     Open file to prompt the user for their preferences, and then write user preferences
     '''
-    singerDict = {user:[]}
-    print("Enter preferences for ----" + user + "----")
+    singerList = []
     while(True):
-            singer = input("Enter an artist that you like (Enter to finish): ")
-            if singer == "":
-                break
-            else:
-                singerDict[user].append(singer)
-    with open(filename, "w") as file:
-        for user,artists in singerDict.items():
-            file.write(user + ": "+", ".join(artists))
+        singer = input("Enter an artist that you like (Enter to finish):\n")
+        if singer == "":
+            break
+        else:
+            singer = singer.title()
+            singerList.append(singer)
+    singerList.sort()
+    return singerList
+
 
 def showMenu():
     '''
     Ruhi Ajinkya
     Menu to show user what options they have
     '''
+    #TODO maybe put delete and show on menu?
     print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np - Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nq - Save and quit")
+    if EXTRA_CREDIT:
+        print("d - Delete preference\ns - Show preferences")
     response = input()
     return response
     
@@ -109,7 +125,7 @@ def popular_score(dict):
     artistLikes = {}
     count = 0
     for user in dict:
-        if user[len(user) - 1] == "$":
+        if user[-1] == "$":
             continue
         for artist in dict[user]:
             if artist in artistLikes:
@@ -134,7 +150,7 @@ def most_likes(dict):
     userList = []
     likes = 0
     for user in dict:
-        if user[len(user) - 1] == "$":
+        if user[-1] == "$":
             continue
         amount = len(dict[user])
         if amount > likes:
@@ -147,8 +163,53 @@ def most_likes(dict):
         print("Sorry, no user found.")
     else:
         for user in userList:
-            print(user + "\n")
-         
+            # print(user + "\n") # can't have newline for one person
+            print(user)
+            
+def delete(currentUser, dict):
+    '''
+    Alan Atrach
+    delets a specified artist from the user's preferences
+    '''
+    artists = dict[currentUser]
+    while len(artists) != 0:
+        print("Type the number correlated to the artist to delete:\n")
+        for i in range (0, len(artists)):
+            print(f"{i + 1}. {artists[i]}")
+        response = input()
+        if response == "":
+            return
+        elif not response.isdigit() or int(response) > len(artists) or int(response) < 1:
+            print("invalid input, try again or press enter to end")
+        else:
+            artists.pop(int(response) - 1)
+            print(f"artist {response} has been removed")
+    print("No artists in user preference")
+
+def showPreferences(currentUser, dict):
+    '''
+    Ian Chao
+    Prints the current user's preferences
+    '''
+    preferences = dict[currentUser]
+    for artist in preferences:
+        print(artist)
+        
+    
+    
+    
+
+def save(data, file):
+    '''
+    Ruhi Ajinkya
+    Uses data that the user inputs to add to the text file
+    '''
+    sortedData = list(data.keys())
+    sortedData.sort()
+    
+    with open(file, "w") as file:
+        for user in sortedData:
+            file.write(user + ":"+",".join(data[user]) + "\n")
             
 #TODO: delete these when done, i found it useful to have them here so you guys can use it if yall want
 
@@ -172,15 +233,23 @@ def main():
     '''
     main function, utilizes all methods
     '''
-    username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):")
-
-    file = "musicrecplus.txt"
-    data = read_preferences(file)
-    option = showMenu()
+    filename = "musicrecplus.txt"
+    if not os.path.exists(filename):
+        file = open(filename, "w")
     
+    data = read_preferences(filename)
+
+    username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):\n")
+    # Check if the user is in the file, if not ask them to enter preferences
+    if not username in data:
+        data[username] = enter_preferences()
+
+    option = showMenu()
+    #TODO: put appropriate methods here
     while option != "q":
+        # print(data)
         if option == "e":
-            enter_preferences(username, file)
+            data[username] = enter_preferences()
         elif option == "r":
             getRecommendations(username, data)
         elif option == "p":
@@ -189,8 +258,17 @@ def main():
             popular_score(data)
         elif option == "m":
             most_likes(data)
-            
+        elif option == "d" and EXTRA_CREDIT:
+            delete(username, data)
+        elif option == "s" and EXTRA_CREDIT:
+            showPreferences(username, data)
+        
+        
         option = showMenu()
-    # TODO: save file after completion
+    
+    
+    
+    save(data, filename)
+
 main()
 
