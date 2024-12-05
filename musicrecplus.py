@@ -6,7 +6,6 @@ Pledge:    I pledge my honor that I have abided by the Stevens Honor System.
 CS115 - Group Project
 '''
 
-
 import os
 
 EXTRA_CREDIT = False
@@ -24,12 +23,15 @@ def read_preferences(file):
             dic[username.rstrip()] = singersList
     return dic
 
-def enter_preferences():
+def enter_preferences(data, username):
     '''
     Ruhi Ajinkya
     Open file to prompt the user for their preferences, and then write user preferences
     '''
-    singerList = []
+    if EXTRA_CREDIT:
+        singerList = data[username]
+    else:
+        singerList = []
     while(True):
         singer = input("Enter an artist that you like (Enter to finish):\n")
         if singer == "":
@@ -47,9 +49,10 @@ def showMenu():
     Menu to show user what options they have
     '''
     #TODO maybe put delete and show on menu?
-    print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np - Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes\nq - Save and quit")
+    print("Enter a letter to choose an option:\ne - Enter preferences\nr - Get recommendations\np - Show most popular artists\nh - How popular is the most popular\nm - Which user has the most likes")
     if EXTRA_CREDIT:
         print("d - Delete preference\ns - Show preferences")
+    print("q - Save and quit")
     response = input()
     return response
     
@@ -194,10 +197,6 @@ def showPreferences(currentUser, dict):
     preferences = dict[currentUser]
     for artist in preferences:
         print(artist)
-        
-    
-    
-    
 
 def save(data, file):
     '''
@@ -211,23 +210,6 @@ def save(data, file):
         for user in sortedData:
             file.write(user + ":"+",".join(data[user]) + "\n")
             
-#TODO: delete these when done, i found it useful to have them here so you guys can use it if yall want
-
-#THIS IS FOR TESTING PURPOSES
-dict = {
-    "Anne Adamant": ["50 Cent", "Eminem", "Lil Wayne", "Snoop Dog"],
-    "Bacon Bryant$": ["Britney Spears", "Gotye", "Kesha", "TMBG"],
-    "Caesar Zeppeli": ["Fun.", "Gotye", "Sara Bareilles"],
-    "Hidden Powers": ["Baby Metal", "FLOW", "Spyair", "Vipera", "something"],
-    "Sappho of Lesbos": ["Anna Kendrick", "Kerkylas Of Andros", "Sara Bareilles"],
-    "Steph Oro": ["Fun.", "Gotye", "Sara Bareilles"]
-}
-
-dict2 = {}
-
-dict3 = {"Steph Oro": ["Fun.", "Gotye", "TMBG"]}
-
-# popular_score(dict2)
 
 def main():
     '''
@@ -245,11 +227,9 @@ def main():
         data[username] = enter_preferences()
 
     option = showMenu()
-    #TODO: put appropriate methods here
     while option != "q":
-        # print(data)
         if option == "e":
-            data[username] = enter_preferences()
+            data[username] = enter_preferences(data, username)
         elif option == "r":
             getRecommendations(username, data)
         elif option == "p":
@@ -263,11 +243,7 @@ def main():
         elif option == "s" and EXTRA_CREDIT:
             showPreferences(username, data)
         
-        
         option = showMenu()
-    
-    
-    
     save(data, filename)
 
 main()
