@@ -224,7 +224,7 @@ def main():
     username = input("Enter your name (put a $ symbol after your name if you wish your preferences to remain private):\n")
     # Check if the user is in the file, if not ask them to enter preferences
     if not username in data:
-        data[username] = enter_preferences()
+        data[username] = enter_preferences(data, username)
 
     option = showMenu()
     while option != "q":
